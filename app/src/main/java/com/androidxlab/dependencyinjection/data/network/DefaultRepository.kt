@@ -26,7 +26,6 @@ class DefaultRepository @Inject constructor(private val service: ApiService) : R
     override suspend fun fetchLatestMovies(): Result {
         return try {
             val result = service.fetchLatestMovies()
-            Log.e("MY TAG", "RESULT = ${result.result}")
             Result.SUCCESS(result)
         }catch (exception: Exception) {
             Result.ERROR(exception.message)
