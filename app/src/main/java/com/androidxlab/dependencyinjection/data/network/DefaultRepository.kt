@@ -16,8 +16,8 @@ import javax.inject.Inject
 
 class DefaultRepository @Inject constructor(private val service: ApiService) : Repository {
 
-    override suspend fun fetchPopularMovies(): LiveData<PagingData<MovieResult>> {
-        return Pager(
+    override suspend fun fetchPopularMovies(): LiveData<PagingData<MovieResult>> = withContext(Dispatchers.IO) {
+         Pager(
             PagingConfig(pageSize = 10, enablePlaceholders = false)
         ){
             MovieDataSource(service)
