@@ -10,6 +10,7 @@ import com.androidxlab.dependencyinjection.data.Repository
 import com.androidxlab.dependencyinjection.data.Result
 import com.androidxlab.dependencyinjection.data.model.MovieList
 import com.androidxlab.dependencyinjection.data.model.MovieResult
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +26,7 @@ class MovieViewModel @Inject constructor(private val repository: Repository): Vi
     var errorMsg: LiveData<String> = _errorMsg
 
     fun fetchPopularMovies() {
+        //Default coroutine context is having the UI thread Pool
         viewModelScope.launch {
             movieData = repository.fetchPopularMovies().cachedIn(viewModelScope)
             repository.fetchLatestMovies()

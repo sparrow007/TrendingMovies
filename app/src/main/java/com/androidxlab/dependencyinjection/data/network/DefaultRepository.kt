@@ -1,6 +1,5 @@
 package com.androidxlab.dependencyinjection.data.network
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig

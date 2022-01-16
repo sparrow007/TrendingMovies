@@ -2,12 +2,16 @@ package com.androidxlab.dependencyinjection
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.androidxlab.dependencyinjection.databinding.ActivityMainBinding
 import com.androidxlab.dependencyinjection.movieslist.MovieViewModel
 import com.androidxlab.dependencyinjection.movieslist.ui.ImageSliderAdapter
 import com.androidxlab.dependencyinjection.movieslist.ui.MovieListAdapter
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -20,29 +24,45 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (application as MyApp).daggerComponent.inject(this)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        val model = ViewModelProvider(this, viewModelFactory).get(MovieViewModel::class.java)
-        model.fetchPopularMovies()
-        model.fetchLatestMovies()
-
-        binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
-       // binding.rvMovie.setHasFixedSize(true)
-        binding.rvMovie.adapter  = adapter
-
-        model.movieData.observe(this, {
-            adapter.submitData(lifecycle,it)
-
-        })
-
-        model.movieLatestData.observe(this, {
-            it?.let {
-                val imageSliderAdapter = ImageSliderAdapter(it.result)
-                binding.viewPagerMain.adapter = imageSliderAdapter
+        runBlocking {
+            //run and blocks the thread
+            launch {
+                delay(5000L)
+                Log.e("MY TAG", "THIS IS THE delay BLOCKS THREAD")
             }
-        })
+            log("after the innner launch")
+        }
+
+        Log.e("MY TAG", "THIS IS THE AFTER BLOCK THREAD")
+
+//        (application as MyApp).daggerComponent.inject(this)
+//        binding = ActivityMainBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
+//
+//        val model = ViewModelProvider(this, viewModelFactory).get(MovieViewModel::class.java)
+//        model.fetchPopularMovies()
+//        model.fetchLatestMovies()
+//
+//        binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
+//       // binding.rvMovie.setHasFixedSize(true)
+//        binding.rvMovie.adapter  = adapter
+//
+//        model.movieData.observe(this, {
+//            adapter.submitData(lifecycle,it)
+//
+//        })
+//
+//        model.movieLatestData.observe(this, {
+//            it?.let {
+//                val imageSliderAdapter = ImageSliderAdapter(it.result)
+//                binding.viewPagerMain.adapter = imageSliderAdapter
+//            }
+//        })
+    }
+
+    private fun log(msg: String) {
+        Log.e("MY TAG", msg)
     }
 
 }
