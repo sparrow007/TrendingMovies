@@ -25,40 +25,29 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        runBlocking {
-            //run and blocks the thread
-            launch {
-                delay(5000L)
-                Log.e("MY TAG", "THIS IS THE delay BLOCKS THREAD")
+        (application as MyApp).daggerComponent.inject(this)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val model = ViewModelProvider(this, viewModelFactory).get(MovieViewModel::class.java)
+        model.fetchPopularMovies()
+        model.fetchLatestMovies()
+
+        binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
+       // binding.rvMovie.setHasFixedSize(true)
+        binding.rvMovie.adapter  = adapter
+
+        model.movieData.observe(this, {
+            adapter.submitData(lifecycle,it)
+
+        })
+
+        model.movieLatestData.observe(this, {
+            it?.let {
+                val imageSliderAdapter = ImageSliderAdapter(it.result)
+                binding.viewPagerMain.adapter = imageSliderAdapter
             }
-            log("after the innner launch")
-        }
-
-        Log.e("MY TAG", "THIS IS THE AFTER BLOCK THREAD")
-
-//        (application as MyApp).daggerComponent.inject(this)
-//        binding = ActivityMainBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        val model = ViewModelProvider(this, viewModelFactory).get(MovieViewModel::class.java)
-//        model.fetchPopularMovies()
-//        model.fetchLatestMovies()
-//
-//        binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
-//       // binding.rvMovie.setHasFixedSize(true)
-//        binding.rvMovie.adapter  = adapter
-//
-//        model.movieData.observe(this, {
-//            adapter.submitData(lifecycle,it)
-//
-//        })
-//
-//        model.movieLatestData.observe(this, {
-//            it?.let {
-//                val imageSliderAdapter = ImageSliderAdapter(it.result)
-//                binding.viewPagerMain.adapter = imageSliderAdapter
-//            }
-//        })
+        })
     }
 
     private fun log(msg: String) {
